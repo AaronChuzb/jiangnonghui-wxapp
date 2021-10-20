@@ -29,4 +29,8 @@
   .page{
     background: #f2f2f2;
   }
+	.button-hover {
+	  background-color: rgba(0, 0, 0, 0.1);
+	  opacity: 0.7;
+	}
 </style>

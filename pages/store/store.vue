@@ -1,7 +1,7 @@
 <!--
  * @Date: 2021-10-14 17:24:16
  * @LastEditors: AaronChu
- * @LastEditTime: 2021-10-19 16:13:47
+ * @LastEditTime: 2021-10-20 14:57:41
 -->
 <template>
   <view class="page">
@@ -9,7 +9,7 @@
       <image class="bg" src="../../static/background.jpg" mode="widthFix" style="width: 750rpx; height: 491rpx"></image>
       <!-- <view style="height: 176rpx;"></view> -->
       <view class="info">
-        <image src="" mode="heightFix" class="head-pic"></image>
+        <image src="/static/avatar.png" mode="heightFix" class="head-pic"></image>
         <view class="name">
           <view class="title">Miss.黄</view>
           <view class="phone">13526985452</view>
@@ -30,10 +30,10 @@
 				</view>
 				<!-- 内容列表 -->
 				<view class="content-list" style="margin-top: 30rpx">
-					<swiper style="height: 100%;" :indicator-dots="false" :autoplay="false" :disable-touch="true" :current="listIndex" @change="listChange">
+					<swiper style="height: 100%;" :indicator-dots="false" :autoplay="false" :current="listIndex" @change="listChange">
 							<!-- 我的店铺 -->
-							<swiper-item> 
-									<z-paging ref="paging" :fixed="false" height="100%" v-model="dataList" @query="getData" :default-page-size="3" :auto-show-back-to-top="true" :refresher-end-bounce-enabled="true" :refresher-complete-delay="300">
+							<swiper-item @touchmove.stop="stopTouchMove"> 
+									<z-paging ref="paging" :fixed="false" height="100%" v-model="dataList" @query="getData" :default-page-size="3" :auto-show-back-to-top="false" :refresher-end-bounce-enabled="true" :refresher-complete-delay="300">
 										<view class="store" v-for="(item, index) in dataList" :key="index">
 											<view class="title-line">
 												<view class="store-title">A01</view>
@@ -49,9 +49,10 @@
 									</z-paging>
 							</swiper-item>
 							<!-- 缴费人员管理 -->
-							<swiper-item>
+							<swiper-item @touchmove.stop="stopTouchMove">
 									<z-paging ref="paging2" :fixed="false" height="100%" :refresher-enabled="false" :loading-more-enabled="false">
-									  
+									  <pending-staff></pending-staff>
+										<Staff></Staff>
 									</z-paging>
 							</swiper-item>
 					</swiper>
@@ -67,7 +68,13 @@
 </template>
 
 <script>
+	import PendingStaff from '../../components/PendingStaff.vue'
+	import Staff from '../../components/Staff.vue'
 export default {
+	components:{
+		PendingStaff,
+		Staff
+	},
   data() {
     return {
       tabbar: '',
@@ -91,12 +98,13 @@ export default {
 		},
 		listChange(e){
 			this.listIndex = e.detail.current
-		}
+		},
+		stopTouchMove(){}
 	}
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .page {
   height: 100vh;
   overflow: hidden;
@@ -152,10 +160,12 @@ export default {
   box-shadow: 0rpx 10rpx 20rpx rgba(0, 0, 0, 0.04);
   border-radius: 30rpx;
   margin: 33rpx auto 0;
-	padding: 30rpx;
+	// padding: 30rpx;
+	padding-top: 30rpx;
 	display: flex;
 	flex-direction: column;
 	.tabs{
+		margin-left: 30rpx;
 		position: relative;
 		display: flex;
 		width: 440rpx;
@@ -207,7 +217,7 @@ export default {
 	background: #FFFFFF;
 	box-shadow: 0rpx 5rpx 20rpx rgba(4, 5, 32, 0.07);
 	border-radius: 30rpx;
-	margin-bottom: 30rpx;
+	margin: 0 auto 30rpx;
 	padding: 27rpx;
 	.title-line{
 		display: flex;

@@ -1,7 +1,7 @@
 <!--
  * @Date: 2021-10-14 17:24:43
  * @LastEditors: AaronChu
- * @LastEditTime: 2021-10-20 18:07:28
+ * @LastEditTime: 2021-10-20 18:33:15
 -->
 <template>
   <view class="page">
@@ -128,7 +128,16 @@
         </view>
       </view>
       <view class="placeholder"></view>
+			<view style="height: 50rpx;"></view>
     </scroll-view>
+		<view class="settle" :class="listIndex==0?'':'hide-settle'">
+			<view class="settle-content">
+				<view class="settle-button">
+					
+				</view>
+			</view>
+      <view style="height: 1rpx;"></view>
+		</view>
     <u-tabbar :list="tabbar" :mid-button="true" active-color="#03A69A" inactive-color="#BEBEBE"></u-tabbar>
   </view>
 </template>
@@ -234,8 +243,9 @@ page {
     .start {
       margin-left: 60rpx;
     }
-    margin-right: 60rpx;
+    
     .end {
+      margin-right: 60rpx;
     }
   }
   .tabs {
@@ -418,5 +428,32 @@ page {
 }
 .card-height-min {
   height: 614rpx;
+}
+.settle{
+	position: fixed;
+	width: 750rpx;
+  overflow: hidden;
+	transition: all .3s;
+  height: calc(50px + 64rpx + env(safe-area-inset-bottom));
+	background: #FFFFFF;
+	box-shadow: 0rpx 0rpx 10rpx rgba(0, 0, 0, 0.16);
+	z-index: 9999999999;
+	bottom: 0;
+	left: 0;
+	right: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  .settle-content{
+    
+  }
+	.settle-button{
+		width: 220rpx;
+		height: 95rpx;
+		background: #D95034;
+		border-radius: 12rpx;
+	}
+}
+.hide-settle{
+	height: 0;
+	padding: 0;
 }
 </style>

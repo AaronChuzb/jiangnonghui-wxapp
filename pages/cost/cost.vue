@@ -39,8 +39,11 @@
           <view class="title">商务区A01</view>
           <view class="sub">
             <view class="date">2020年02月</view>
-            <view class="status">已缴费</view>
+            <view class="status">{{ listIndex==0?'待缴费':'已缴费' }}</view>
           </view>
+					<view class="check-box" @click="checkOrder(index)" v-if="listIndex == 0">
+						<image src="../../static/select.png" mode="widthFix" :class="item.checked?'show-check':''"></image>
+					</view>
         </view>
         <view class="collapse">
           <view class="collapse-title" @click="showDetail(index)">
@@ -130,11 +133,21 @@
       <view class="placeholder"></view>
 			<view style="height: 50rpx;"></view>
     </scroll-view>
-		<view class="settle" :class="listIndex==0?'':'hide-settle'">
+		<view class="settle" :class="(showSettleBar && listIndex == 0)?'':'hide-settle'">
 			<view class="settle-content">
-				<view class="settle-button">
-					
+				<view class="left">
+					<view class="check-box-all" @click="checkAllOrder()">
+						<view class="check-box-all-item">
+							<image src="../../static/select.png" mode="widthFix" :class="checkAll?'show-check':''"></image>
+						</view>
+						<view class="">全选</view>
+					</view>
+					<view class="price">
+						<text style="font-size: 28rpx;color: #333333;">合计：</text>
+						<text>￥19000.00</text>
+					</view>
 				</view>
+				<view class="settle-button" hover-class="button-hover">缴费</view>
 			</view>
       <view style="height: 1rpx;"></view>
 		</view>
@@ -147,7 +160,6 @@ export default {
   data() {
     return {
       tabbar: '',
-      swiperList: ['/static/banner.jpg'],
       startTime: '2021-07',
       endTime: '2021-08',
       listIndex: 0,
@@ -156,10 +168,13 @@ export default {
         { name: '已缴费', width: 120, margin: 0, left: 180 },
       ],
       pageData: [
-        { id: 0, show: false },
-        { id: 1, show: false },
+        { id: 0, show: false, checked: false },
+        { id: 1, show: false, checked: false },
       ],
+			chooseOrderList: [],
+			checkAll: false,
       statusColor: '#D95034',
+			showSettleBar: false
     }
   },
   onLoad() {
@@ -181,10 +196,45 @@ export default {
       this.listIndex = index
       index == 0 ? (this.statusColor = '#D95034') : (this.statusColor = '#289F97')
     },
+		checkOrder(index){
+			this.pageData[index].checked = !this.pageData[index].checked
+			if(this.pageData[index].checked){
+				this.chooseOrderList.push(index)
+			} else {
+				this.chooseOrderList.splice(this.chooseOrderList.indexOf(index), 1)
+			}
+			// 是否显示结算的bar
+			if(this.chooseOrderList.length > 0){
+				this.showSettleBar = true
+			} else {
+				this.showSettleBar = false
+			}
+			// 是否判断为全选
+			if(this.chooseOrderList.length == this.pageData.length){
+				this.checkAll = true
+			} else {
+				this.checkAll = false
+			}
+		},
+		checkAllOrder(){
+			this.checkAll = !this.checkAll
+			this.chooseOrderList = []
+			if(this.checkAll){
+				this.pageData.forEach((item, index)=>{
+					this.chooseOrderList.push(index)
+					this.pageData[index].checked = true
+				})
+			} else {
+				this.pageData.forEach((item, index)=>{
+					this.pageData[index].checked = false
+				})
+				this.showSettleBar = false
+			}
+		},
     showDetail(index) {
-      console.log(index)
       this.pageData[index].show = !this.pageData[index].show
     },
+		
   },
 }
 </script>
@@ -308,12 +358,33 @@ page {
   transform-origin: top;
   .top {
     // width: 690rpx;
+		position: relative;
     margin-left: -1rpx;
     margin-top: -2rpx;
     height: 158rpx;
     background: #289f97;
     border-radius: 30rpx 30rpx 0rpx 0rpx;
     padding: 30rpx 30rpx;
+		.check-box{
+			position: absolute;
+			width: 60rpx;
+			height: 60rpx;
+			background: #FFFFFF;
+			border-radius: 50%;
+			top: 16rpx;
+			right: 30rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			image{
+				width: 48rpx;
+				height: 35rpx;
+				display: none;
+			}
+			.show-check{
+				display: block;
+			}
+		}
     .title {
       font-size: 50rpx;
       font-weight: bold;
@@ -443,17 +514,58 @@ page {
 	right: 0;
   padding-bottom: env(safe-area-inset-bottom);
   .settle-content{
-    
-  }
+		position: relative;
+		display: flex;
+    .check-box-all{
+			margin-top: 30rpx;
+			margin-left: 30rpx;
+			display: flex;
+			align-items: center;
+			.check-box-all-item{
+				margin-right: 21rpx;
+				width: 50rpx;
+				height: 50rpx;
+				border: 3rpx solid #D95034;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				image{
+					width: 48rpx;
+					height: 35rpx;
+					display: none;
+				}
+				.show-check{
+					display: block;
+				}
+			}
+		}
+		.price{
+			margin-top: 26rpx;
+			margin-left: 30rpx;
+			font-size: 46rpx;
+			font-weight: 500;
+			color: #D95034;
+		}
+	}
 	.settle-button{
+		position: absolute;
+		right: 30rpx;
+		top: 52rpx;
 		width: 220rpx;
 		height: 95rpx;
 		background: #D95034;
 		border-radius: 12rpx;
+		font-size: 46rpx;
+		font-weight: 500;
+		line-height: 95rpx;
+		color: #FFFFFF;
+		text-align: center;
 	}
 }
 .hide-settle{
 	height: 0;
 	padding: 0;
 }
+
 </style>

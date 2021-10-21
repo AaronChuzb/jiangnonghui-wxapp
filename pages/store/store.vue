@@ -1,7 +1,7 @@
 <!--
  * @Date: 2021-10-14 17:24:16
  * @LastEditors: AaronChu
- * @LastEditTime: 2021-10-20 14:57:41
+ * @LastEditTime: 2021-10-21 11:22:48
 -->
 <template>
   <view class="page">
@@ -26,7 +26,6 @@
 							{{ item.name }}
 						</view>
 					<view class="line" :style="{ left: tabList[listIndex].left + 'rpx', width: tabList[listIndex].width + 'rpx'}"></view>
-					
 				</view>
 				<!-- 内容列表 -->
 				<view class="content-list" style="margin-top: 30rpx">
@@ -57,7 +56,8 @@
 							</swiper-item>
 					</swiper>
 				</view>
-				<view class="add-item">
+				<!-- 添加按钮 -->
+				<view class="add-item" hover-class="button-hover" @click="newStore">
 					<image src="../../static/add.png" mode="heightFix" style="height: 36rpx;"></image>
 				</view>
 			</view>
@@ -98,6 +98,9 @@ export default {
 		},
 		listChange(e){
 			this.listIndex = e.detail.current
+		},
+		newStore(){
+			uni.navigateTo({ url: '/pages/form/form' })
 		},
 		stopTouchMove(){}
 	}

@@ -1,17 +1,17 @@
-const http = 'http://jiannohui/api/api'
-// const http = 'http://localhost:3000/app/api'
+const http = 'http://www.jnhmarket.cn/api/api'
 const request = (url, data) =>{
 	let header = {}
 	if(uni.getStorageSync('token')){
 		header = {
         'Content-Type': 'application/json',
 				'token': uni.getStorageSync('token')
-      }
+    }
 	} else {
 		header = {
 		  'Content-Type': 'application/json'
 		}
 	}
+	console.log(header)
   return new Promise((resolve, reject)=>{
     uni.request({
       url: http + url,

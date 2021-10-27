@@ -10,12 +10,14 @@
           <view class="icon">
             <image src="../../static/natice.png" mode="widthFix" style="width: 40rpx; height: 40rpx"></image>
           </view>
-          <view class="text"> 即将到截止日，请尽快缴费！ </view>
+          <view class="text"> 
+						<u-notice-bar color="#fff" type="none" :volume-icon="false" mode="horizontal" :is-circular="true" :speed="200"  :list="message"></u-notice-bar> 
+					</view>
           <view class="all" @click="viewAll"> 查看全部 </view>
         </view>
         <!-- 富文本内容，演示用过期删除 -->
         <view class="rich-text">
-          <view class="title"> 网页栅格系统的必要性 </view>
+          <view class="title" @click="login"> 网页栅格系统的必要性 </view>
           <view class="sub-title"> 1.更专业 </view>
           <view class="sub-content"> 使设计有迹可循，具有逻辑性，同时也更规范，减少设计中的尺寸计算和无效尝试，设计师可以将更多的精力放在设计本身。 </view>
           <image class="image" src="../../static/picture.jpg" mode="widthFix"></image>
@@ -23,6 +25,7 @@
           <view class="sub-content"> 统一设计规范，减少决策时间，使沟通更高效。 </view>
           <view class="sub-title"> 3.布局更方便 </view>
           <view class="sub-content"> 特别是对响应式布局，能够使不同设备上呈现的界面更具统一性。 </view>
+					<!-- <rich-text :nodes="html"></rich-text> -->
         </view>
       </view>
       <view class="contact">
@@ -37,17 +40,35 @@
 </template>
 
 <script>
+	import { index } from "../../api/index.js"
 export default {
   data() {
     return {
       tabbar: '',
       swiperList: ['/static/banner.jpg'],
+			html: "",
+			message: []
     }
   },
   onLoad() {
     this.tabbar = this.$store.state.tabbar
+		this.getData()
+		
   },
   methods: {
+		login(){
+			this.$store.dispatch('login')
+		},
+		async getData(){
+			const res = await index()
+			console.log(res)
+			// this.swiperList = res.data.image
+			// this.swiperList.forEach((item, index)=>{
+			// 	this.swiperList[index] = this.$imgUrl + item
+			// })
+			// this.html = res.data.system
+			this.message.push(res.data.message.message) 
+		},
     copy() {
       console.log()
       uni.setClipboardData({
@@ -121,7 +142,7 @@ page {
     .text {
       font-size: 28rpx;
       color: #ffffff;
-      margin: 0 20rpx;
+      // margin: 0 20rpx;
       flex: 1;
     }
     .all {

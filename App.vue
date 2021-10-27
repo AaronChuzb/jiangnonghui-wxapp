@@ -1,18 +1,24 @@
 <!--
  * @Date: 2019-04-01 09:47:12
  * @LastEditors: AaronChu
- * @LastEditTime: 2021-10-19 15:13:42
+ * @LastEditTime: 2021-10-27 18:20:23
 -->
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			// 设定登录状态
+			this.$store.dispatch('setStatus')
+			// 获取用户信息设定用户权限， 如果登录了得话
+			if(this.$store.getters.loginStatus){
+				this.$store.dispatch('setPermission')
+				this.$store.dispatch('getUserInfo')
+			}
 		},
 		onShow: function() {
-			console.log('App Show')
+			
 		},
 		onHide: function() {
-			console.log('App Hide')
+			
 		}
 	}
 </script>

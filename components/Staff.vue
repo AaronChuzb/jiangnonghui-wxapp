@@ -8,7 +8,10 @@
       <view class="item">
         <image src="../static/avatar.png" mode="widthFix" class="avatar"></image>
         <view class="right-wrap" :style="{borderBottom: index == 1?'none':'2rpx solid #F8F8F8'}">
-          <view class="name">{{item.name}}</view>
+					<view class="name-line">
+						<view class="name">{{item.name}}</view>
+						<view class="area">商务区 <text>A01</text></view>
+					</view>
           <view class="phone">{{ item.phone }}</view>
         </view>
       </view>
@@ -108,12 +111,28 @@ export default {
       margin-left: 30rpx;
       border-bottom: 2rpx solid #f8f8f8;
       // margin-right: 52rpx;
-      .name {
-        font-size: 36rpx;
-        font-weight: bold;
-        line-height: 36rpx;
-        color: #333333;
-      }
+			.name-line{
+				display: flex;
+				justify-content: space-between;
+				margin-right: 52rpx;
+				.name{
+					font-size: 36rpx;
+					font-weight: bold;
+					line-height: 36rpx;
+					color: #333333;
+				}
+				.area{
+					font-size: 32rpx;
+					line-height: 32rpx;
+					font-weight: 500;
+					line-height: px;
+					color: #333333;
+					opacity: 1;
+					text{
+						font-weight: bold;
+					}
+				}
+			}
       .phone {
 				margin-top: 36rpx;
         font-size: 28rpx;

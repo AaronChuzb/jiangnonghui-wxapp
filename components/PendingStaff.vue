@@ -4,13 +4,14 @@
 			<view class="title">待审核缴费人员</view>
 			<view class="num">2</view>
 		</view>
-		<view class="item" v-for="(item, index) in 2" :key="index">
+		<view class="item" v-for="(item, index) in 3" :key="index">
 			<image src="/static/avatar.png" mode="heightFix" class="avatar"></image>
 			<view class="right" :style="{borderBottom: index == 1?'none':'2rpx solid #F8F8F8'}">
 				<view class="name-line">
 					<view class="name">张三</view>
-					<view class="phone">13526985452</view>
+					<view class="area">商务区 <text>A01</text></view>
 				</view>
+				<view class="phone">13526985452</view>
 				<view class="button-box">
 					<view class="button reject" hover-class="button-hover">拒绝</view>
 					<view class="button resolve" hover-class="button-hover">通过</view>
@@ -34,7 +35,7 @@
 <style lang="scss">
 .card{
 	width: 630rpx;
-	padding-bottom: 31rpx;
+	padding-bottom: 61rpx;
 	// height: 500rpx;
 	background: #FFFFFF;
 	box-shadow: 0rpx 0rpx 10rpx rgba(0, 0, 0, 0.1);
@@ -67,7 +68,7 @@
 		}
 	}
 	.item{
-		height: 193rpx;
+		height: 213rpx;
 		display: flex;
 		align-items: flex-start;
 		width: 602rpx;
@@ -83,6 +84,7 @@
 			padding-bottom: 31rpx;
 			margin-left: 30rpx;
 			border-bottom: 2rpx solid #F8F8F8;
+			margin-bottom: 20rpx;
 			// margin-right: 52rpx;
 			.name-line{
 				display: flex;
@@ -94,13 +96,25 @@
 					line-height: 36rpx;
 					color: #333333;
 				}
-				.phone{
-					font-size: 28rpx;
+				.area{
+					font-size: 32rpx;
 					font-weight: 500;
-					line-height: 28rpx;
-					
-					color: #999999;
+					line-height: px;
+					color: #333333;
+					opacity: 1;
+					text{
+						font-weight: bold;
+					}
 				}
+				
+			}
+			.phone{
+				margin-top: 20rpx;
+				font-size: 28rpx;
+				font-weight: 500;
+				line-height: 28rpx;
+				
+				color: #999999;
 			}
 			.button-box{
 				display: flex;

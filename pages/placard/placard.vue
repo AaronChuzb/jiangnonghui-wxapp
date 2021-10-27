@@ -29,6 +29,7 @@
 </template>
 
 <script>
+	import {message} from "../../api/index.js"
 export default {
   data() {
     return {
@@ -38,6 +39,8 @@ export default {
   onLoad(options) {},
   methods: {
     async getData(pageNo, pageSize) {
+			const res = await message(pageNo, pageSize, 2, '')
+			console.log(res)
       this.$refs.paging.complete([1, 2, 3, 4, 5, 6, 7, 8, 9])
     },
     showDetail(index) {

@@ -11,8 +11,8 @@
       <view class="info">
         <image src="/static/avatar.png" mode="heightFix" class="head-pic"></image>
         <view class="name">
-          <view class="title">Miss.黄</view>
-          <view class="phone">13526985452</view>
+          <view class="title">未登录</view>
+          <!-- <view class="phone">13526985452</view> -->
         </view>
       </view>
       <view class="list" style="flex: 1; margin-bottom: 45rpx;">
@@ -29,8 +29,13 @@
 				</view>
 				<!-- 内容列表 -->
 				<view class="content-list" style="margin-top: 30rpx">
-					<swiper style="height: 100%;" :indicator-dots="false" :autoplay="false" :current="listIndex" @change="listChange">
-							<!-- 我的店铺 -->
+					<view style="height: 100%;" v-if="$store.getters.loginStatus == false">
+						<u-empty text="暂未登录" mode="permission" >
+							<u-button slot="bottom">立即登录</u-button>
+						</u-empty>
+					</view>
+					<swiper v-else style="height: 100%;" :indicator-dots="false" :autoplay="false" :current="listIndex" @change="listChange">
+							<!-- 我的店铺（员工店主看到的状态不同） -->
 							<swiper-item @touchmove.stop="stopTouchMove"> 
 									<z-paging ref="paging" :fixed="false" height="100%" v-model="dataList" @query="getData" :default-page-size="3" :auto-show-back-to-top="false" :refresher-end-bounce-enabled="true" :refresher-complete-delay="300">
 										<view class="store" v-for="(item, index) in dataList" :key="index">
@@ -47,7 +52,7 @@
 										</view>
 									</z-paging>
 							</swiper-item>
-							<!-- 缴费人员管理 -->
+							<!-- 缴费人员管理（仅店主） -->
 							<swiper-item @touchmove.stop="stopTouchMove">
 									<z-paging ref="paging2" :fixed="false" height="100%" :refresher-enabled="false" :loading-more-enabled="false">
 									  <pending-staff></pending-staff>
@@ -100,7 +105,20 @@ export default {
 			this.listIndex = e.detail.current
 		},
 		newStore(){
-			uni.navigateTo({ url: '/pages/form/form' })
+			if(this.$store.getters.loginStatus){
+				uni.navigateTo({ url: '/pages/form/form' })
+			} else {
+				const that = this
+				uni.showModal({
+					title: '提示',
+					content: '您还没有登录',
+					success: function (res) {
+						if (res.confirm) {
+							that.$store.dispatch('login')
+						}
+					}
+				});
+			}
 		},
 		stopTouchMove(){}
 	}

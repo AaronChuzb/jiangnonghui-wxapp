@@ -17,20 +17,20 @@
         </view>
         <!-- 富文本内容，演示用过期删除 -->
         <view class="rich-text">
-          <view class="title" @click="login"> 网页栅格系统的必要性 </view>
+          <!-- <view class="title" @click="login"> 网页栅格系统的必要性 </view>
           <view class="sub-title"> 1.更专业 </view>
           <view class="sub-content"> 使设计有迹可循，具有逻辑性，同时也更规范，减少设计中的尺寸计算和无效尝试，设计师可以将更多的精力放在设计本身。 </view>
           <image class="image" src="../../static/picture.jpg" mode="widthFix"></image>
           <view class="sub-title"> 2.更高效 </view>
           <view class="sub-content"> 统一设计规范，减少决策时间，使沟通更高效。 </view>
           <view class="sub-title"> 3.布局更方便 </view>
-          <view class="sub-content"> 特别是对响应式布局，能够使不同设备上呈现的界面更具统一性。 </view>
-					<!-- <rich-text :nodes="html"></rich-text> -->
+          <view class="sub-content"> 特别是对响应式布局，能够使不同设备上呈现的界面更具统一性。 </view> -->
+					<rich-text :nodes="html"></rich-text>
         </view>
       </view>
       <view class="contact">
         <image src="/static/phone.png" mode="heightFix" style="height: 40rpx; margin-left: 30rpx"></image>
-        <view class="phone"> 156-9854-5236 </view>
+        <view class="phone"> {{phone}} </view>
         <image @click="copy" src="/static/copy.png" mode="heightFix" style="height: 30rpx; margin-right: 30rpx"></image>
       </view>
       <view class="placeholder"></view>
@@ -47,7 +47,8 @@ export default {
       tabbar: '',
       swiperList: ['/static/banner.jpg'],
 			html: "",
-			message: []
+			message: [],
+			phone: ''
     }
   },
   onLoad() {
@@ -62,17 +63,15 @@ export default {
 		async getData(){
 			const res = await index()
 			console.log(res)
-			// this.swiperList = res.data.image
-			// this.swiperList.forEach((item, index)=>{
-			// 	this.swiperList[index] = this.$imgUrl + item
-			// })
-			// this.html = res.data.system
-			this.message.push(res.data.message.message) 
+			this.swiperList = res.data.image
+			this.html = res.data.system
+			this.message.push(res.data.message.message)
+			this.phone = res.data.phone
 		},
     copy() {
       console.log()
       uni.setClipboardData({
-        data: '156-9854-5236', //要被复制的内容
+        data: this.phone, //要被复制的内容
         success: function () {
           //重点~做笔记
           //在success中加入uni.hideToast()可以解决
@@ -155,6 +154,7 @@ page {
     width: 630rpx;
     margin: 0 auto;
     padding-top: 40rpx;
+		
     .title {
       font-size: 50rpx;
       font-weight: bold;
@@ -199,4 +199,5 @@ page {
     color: #334148;
   }
 }
+.uni-rich-textimg{ max-width:690rpx !important; } 
 </style>

@@ -9,10 +9,10 @@
 			// 设定登录状态
 			this.$store.dispatch('setStatus')
 			// 获取用户信息设定用户权限， 如果登录了得话
-			if(this.$store.getters.loginStatus){
-				this.$store.dispatch('setPermission')
+			if(this.$store.state.isLogin){
 				this.$store.dispatch('getUserInfo')
 			}
+			console.log(this.$store.state.isLogin)
 		},
 		onShow: function() {
 			

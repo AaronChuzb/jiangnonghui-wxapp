@@ -1,5 +1,12 @@
+/*
+ * @Date: 2021-10-25 14:31:19
+ * @LastEditors: AaronChu
+ * @LastEditTime: 2021-10-28 14:19:35
+ */
+import store from '../store/index.js'
 const http = 'http://www.jnhmarket.cn/api/api'
 const request = (url, data) =>{
+	uni.showLoading()
 	let header = {}
 	if(uni.getStorageSync('token')){
 		header = {
@@ -11,7 +18,6 @@ const request = (url, data) =>{
 		  'Content-Type': 'application/json'
 		}
 	}
-	console.log(header)
   return new Promise((resolve, reject)=>{
     uni.request({
       url: http + url,
@@ -19,9 +25,24 @@ const request = (url, data) =>{
       header: header,
       method: 'POST',
       success: ({ data }) => {
-        resolve(data)
+				uni.hideLoading()
+				if(data.code == 10){
+					uni.removeStorageSync('token')
+					uni.showModal({
+						title: '提示',
+						content: '登录已过期',
+						success: function (res) {
+							if (res.confirm) {
+								store.dispatch('login')
+							} 
+						}
+					});
+				} else {
+					resolve(data)
+				}
       },
       fail: (error) => {
+				uni.hideLoading()
         reject(error)
       }
     })

@@ -2,19 +2,19 @@
 	<view class="card">
 		<view class="title-box">
 			<view class="title">待审核缴费人员</view>
-			<view class="num">2</view>
+			<view class="num">{{ pageList.length }}</view>
 		</view>
-		<view class="item" v-for="(item, index) in 3" :key="index">
-			<image src="/static/avatar.png" mode="heightFix" class="avatar"></image>
+		<view class="item" v-for="(item, index) in pageList" :key="index">
+			<image :src="item.headpic" mode="heightFix" class="avatar"></image>
 			<view class="right" :style="{borderBottom: index == 1?'none':'2rpx solid #F8F8F8'}">
 				<view class="name-line">
-					<view class="name">张三</view>
-					<view class="area">商务区 <text>A01</text></view>
+					<view class="name">{{ item.name }}</view>
+					<view class="area">{{item.area_name}} <text>{{item.mouth_name}}</text></view>
 				</view>
-				<view class="phone">13526985452</view>
+				<view class="phone">{{ item.phone }}</view>
 				<view class="button-box">
-					<view class="button reject" hover-class="button-hover">拒绝</view>
-					<view class="button resolve" hover-class="button-hover">通过</view>
+					<view class="button reject" hover-class="button-hover" @click="staffReject(index)">拒绝</view>
+					<view class="button resolve" hover-class="button-hover" @click="staffAgree(index)">通过</view>
 				</view>
 			</view>
 		</view>
@@ -22,12 +22,46 @@
 </template>
 
 <script>
+	import { agree, reject } from '../api/store.js'
 	export default {
 		name:"PendingStaff",
-		data() {
-			return {
-				
-			};
+		props:{
+			pageList: {
+				type:Array,
+				default: ()=>{
+					return []
+				}
+			}
+		},
+		methods:{
+			staffAgree(index){
+				const that = this
+				uni.showModal({
+					title: '提示',
+					content: `确定要同意${this.pageList[index].name}的申请吗`,
+					success: async function (res) {
+						if (res.confirm) {
+							const res = await agree(that.pageList[index].id)
+							that.$toast(res.msg)
+							that.$emit('done')
+						}
+					}
+				})
+			},
+			staffReject(index){
+				const that = this
+				uni.showModal({
+					title: '提示',
+					content: `确定要拒绝${this.pageList[index].name}的申请吗`,
+					success: async function  (res) {
+						if (res.confirm) {
+							const res = await reject(that.pageList[index].id)
+							that.$toast(res.msg)
+							that.$emit('done')
+						}
+					}
+				})
+			}
 		}
 	}
 </script>

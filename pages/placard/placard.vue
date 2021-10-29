@@ -5,14 +5,14 @@
 -->
 <template>
   <view class="page">
-    <z-paging ref="paging" v-model="dataList" @query="getData" :default-page-size="3" :auto-show-back-to-top="true" :refresher-end-bounce-enabled="true" :refresher-complete-delay="300">
+    <z-paging ref="paging" v-model="dataList" @query="getData" :default-page-size="8" :auto-show-back-to-top="true" :refresher-end-bounce-enabled="true" :refresher-complete-delay="300">
       <view style="height: 49rpx"></view>
-      <view class="item" v-for="index in dataList" :key="index" @click="showDetail(index)">
+      <view class="item" v-for="(item, index) in dataList" :key="item.create_time" @click="showDetail(index)">
         <view class="title-box">
-          <view class="title">系统公告</view>
-          <view class="date">2020-04-14</view>
+          <view class="title">{{ item.title }}</view>
+          <view class="date">{{ item.create_time }}</view>
         </view>
-        <view class="content">特别是对响应式布局，能够使不同设...</view>
+        <view class="content">{{item.message }}</view>
       </view>
     </z-paging>
     <uni-popup ref="popup" type="center">
@@ -20,9 +20,9 @@
         <view class="close" @click="$refs.popup.close()">
           <view>+</view>
         </view>
-        <view class="title">系统公告</view>
-        <view class="date-box">2020-04-14</view>
-        <view class="content-box"> 特别是对响应式布局，能够使不同设备上呈现的界面更具统一性。 </view>
+        <view class="title">{{ message.title }}</view>
+        <view class="date-box">{{ message.create_time }}</view>
+        <view class="content-box">{{ message.message }}</view>
       </view>
     </uni-popup>
   </view>
@@ -34,16 +34,17 @@ export default {
   data() {
     return {
       dataList: [],
+			message:{}
     }
   },
   onLoad(options) {},
   methods: {
     async getData(pageNo, pageSize) {
 			const res = await message(pageNo, pageSize, 2, '')
-			console.log(res)
-      this.$refs.paging.complete([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      this.$refs.paging.complete(res.data)
     },
     showDetail(index) {
+			this.message = this.dataList[index]
       this.$refs.popup.open()
     },
   },

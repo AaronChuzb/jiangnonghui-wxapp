@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-10-19 10:08:46
  * @LastEditors: AaronChu
- * @LastEditTime: 2021-10-26 10:13:24
+ * @LastEditTime: 2021-10-28 15:04:45
  */
 import Vue from "vue"
 import Vuex from "vuex"
 import getters from "./getters.js"
-import { userLogin }  from "../api/store.js"
+import { userLogin, getUserInfo }  from "../api/store.js"
 Vue.use(Vuex)
 export default new Vuex.Store({
   // 全局属性变量
@@ -31,8 +31,12 @@ export default new Vuex.Store({
         pagePath: "/pages/store/store"
       },
     ],
-    token: '',
-    userInfo: {}, // 用户信息
+    userInfo: {
+			headpic:"",
+			identity: 0,
+			nick_name:"未登录",
+			phone:""
+		}, // 用户信息
     isLogin: false ,// 登录状态
 		permission: '', // 身份信息，员工还是店主
   },
@@ -52,7 +56,7 @@ export default new Vuex.Store({
       if (uni.getStorageSync('token')) {
         commit('SET_LOGIN_STATUS', true)
       } else {
-        commit('SET_LOGIN_STATUS', true)
+        commit('SET_LOGIN_STATUS', false)
       }
     },
 		setPermission({ commit }){
@@ -64,22 +68,20 @@ export default new Vuex.Store({
         desc: "用于完善用户信息",
         success: (res) => {
 					var userInfo = res.userInfo
-          uni.setStorageSync('userInfo', userInfo)
           uni.login({
             success: async (result) => {
-							uni.reLaunch({
-								url: '/pages/setup/setup',
-							});
-							// const data = await userLogin(result.code,  JSON.stringify(userInfo))
-							// 判断用户状态，初次登录走引导流程
-							// console.log(data)
-							// // 登录成功之后，设定登录状态
-							// commit('SET_LOGIN_STATUS', true)
-							// // 设定用户信息
-							// commit('SET_USERINFO', userInfo)
-							// // 设定用户权限
-							// commit('SET_PERMISSION', data.data.permission)
-							// uni.setStorageSync('permission', data.data.permission)
+							const data = await userLogin(result.code,  JSON.stringify(userInfo))
+							commit('SET_PERMISSION', data.data.identity)
+							uni.setStorageSync('token', data.data.token)
+							commit('SET_LOGIN_STATUS', true)
+							commit('SET_USERINFO', data.data)
+							// 判断用户状态，初次登录或者没有选择身份或者电话号码
+							if(data.data.identity == 0 || (data.data.phone == '')){
+							// if(data.data.identity == 0){
+								uni.reLaunch({
+									url: '/pages/setup/setup',
+								});
+							}
             }
           })
         },
@@ -91,11 +93,17 @@ export default new Vuex.Store({
         }
       })
     },
-    getUserInfo({ commit }) {
-      const userInfo = uni.getStorageSync('userInfo')
-      if (userInfo) {
-        commit('SET_USERINFO', userInfo)
-      }
+    async getUserInfo({ commit }) {
+      const res = await getUserInfo()
+      console.log('用户信息:',res)
+			// 如果用户信息中没有电话，进入引导页
+			commit('SET_USERINFO', res.data)
+			commit('SET_PERMISSION', res.data.identity)
+			if(res.data.phone == ''){
+				uni.reLaunch({
+					url: '/pages/setup/setup',
+				});
+			}
     }
   },
   getters

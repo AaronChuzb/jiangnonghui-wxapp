@@ -2,15 +2,15 @@
   <view class="card">
     <view class="title-box">
       <view class="title">我的员工</view>
-      <view class="num">2</view>
+      <view class="num">{{ pageList.length }}</view>
     </view>
-    <u-swipe-action :show="item.show" :index="index" v-for="(item, index) in list" :key="index" @click="click" @open="open" :options="options">
+    <u-swipe-action :show="item.show" :index="index" v-for="(item, index) in pageList" :key="index" @click="click" @open="open" :options="options">
       <view class="item">
-        <image src="../static/avatar.png" mode="widthFix" class="avatar"></image>
+        <image :src="item.headpic" mode="widthFix" class="avatar"></image>
         <view class="right-wrap" :style="{borderBottom: index == 1?'none':'2rpx solid #F8F8F8'}">
 					<view class="name-line">
 						<view class="name">{{item.name}}</view>
-						<view class="area">商务区 <text>A01</text></view>
+						<view class="area">{{item.area_name}} <text>{{item.mouth_name}}</text></view>
 					</view>
           <view class="phone">{{ item.phone }}</view>
         </view>
@@ -22,24 +22,16 @@
 <script>
 export default {
   name: 'PendingStaff',
+	props:{
+		pageList: {
+			type:Array,
+			default: ()=>{
+				return []
+			}
+		}
+	},
   data() {
     return {
-      list: [
-        {
-          id: 0,
-          name: '张三',
-          phone: '13526985452',
-          images: '/static/avatar',
-          show: false,
-        },
-        {
-          id: 1,
-          name: '张三',
-          phone: '13526985452',
-          images: '/static/avatar',
-          show: false,
-        }
-      ],
       options: [
         {
           text: '删除',
@@ -53,8 +45,7 @@ export default {
   },
   methods: {
     open(index) {
-      // 先将正在被操作的swipeAction标记为打开状态，否则由于props的特性限制，
-      // 原本为'false'，再次设置为'false'会无效
+      // 先将正在被操作的swipeAction标记为打开状态，否则由于props的特性限制，原本为'false'，再次设置为'false'会无效
       this.list[index].show = true
       this.list.map((val, idx) => {
         if (index != idx) this.list[idx].show = false

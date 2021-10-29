@@ -1,9 +1,10 @@
 import request from "../utils/request";
 
-expect function login(code, user){
-	return request('/login/login', {
-		code,
-		user
+expect function list(code, user){
+	return request('/pay/pay_list', {
+		page
 	})
 }
+
+
 

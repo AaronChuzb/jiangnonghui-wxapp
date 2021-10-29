@@ -6,7 +6,7 @@
 <template>
   <view class="page">
 		<!-- 未登录状态 -->
-		<view style="height: calc(100vh - 50rpx);" v-if="$store.getters.loginStatus == false">
+		<view style="height: calc(100vh - 50rpx);" v-if="!loginStatus">
 			<u-empty text="暂未登录" mode="permission" >
 				<u-button slot="bottom" @click="$store.dispatch('login')">立即登录</u-button>
 			</u-empty>
@@ -163,6 +163,7 @@
 </template>
 
 <script>
+	import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -184,9 +185,13 @@ export default {
 			showSettleBar: false
     }
   },
+	computed:{
+		...mapGetters([
+      'loginStatus'
+    ]),
+	},
   onLoad() {
     this.tabbar = this.$store.state.tabbar
-		console.log(this.$store.getters.loginStatus)
   },
   methods: {
     /**

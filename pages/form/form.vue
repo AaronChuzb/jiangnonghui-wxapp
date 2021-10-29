@@ -7,17 +7,17 @@
 				<view class="form-item">
 					<view class="title"><view>店铺单元</view> <!-- <view class="valid">{{ rules['store'].msg }}</view> --></view>
 					<view class="content">
-						<picker @change="bindPickerChange" :value="index" :range="array">
+						<picker @change="areaChange" :range="areaAndMouths" range-key="area_name">
 							<view class="picker">
-								<input type="text" value=""  placeholder="请选择区域" placeholder-class="input-placeholder" disabled />
+								<input type="text" v-model="area.area_name" placeholder="请选择区域" placeholder-class="input-placeholder" disabled />
 								<image src="../../static/pulldown.png" mode="widthFix"></image>
 							</view>
 						</picker>
 					</view>
 					<view class="content">
-						<picker @change="bindPickerChange" :value="index" :range="array">
+						<picker @change="mouthChange"  :range="mouths" range-key="mouth_name">
 							<view class="picker">
-								<input type="text" value=""  placeholder="请选择档口" placeholder-class="input-placeholder" disabled />
+								<input type="text" v-model="mouth.mouth_name" placeholder="请选择档口" placeholder-class="input-placeholder" disabled />
 								<image src="../../static/pulldown.png" mode="widthFix"></image>
 							</view>
 						</picker>
@@ -26,7 +26,7 @@
 				<view class="form-item">
 					<view class="title"><view>姓名</view> <!-- <view class="valid">{{ rules['name'].msg }}</view> --></view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入姓名" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.name"  placeholder="请输入姓名" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 				<view class="form-item">
@@ -42,19 +42,19 @@
 				<view class="form-item">
 					<view class="title">手机号码</view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入手机号码" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.phone"  placeholder="请输入手机号码" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 				<view class="form-item">
 					<view class="title">身份证号码</view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入身份证号码" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.idcard"  placeholder="请输入身份证号码" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 				<view class="form-item">
 					<view class="title">身份证地址</view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入身份证地址" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.address"  placeholder="请输入身份证地址" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 				<view class="form-item">
@@ -102,19 +102,19 @@
 				<view class="form-item" v-if="!form.controller">
 					<view class="title">实际控制人姓名</view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入实际控制人姓名" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.c_name"  placeholder="请输入实际控制人姓名" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 				<view class="form-item" v-if="!form.controller">
 					<view class="title">实际控制人手机号码</view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入实际控制人手机号码" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.c_phone"  placeholder="请输入实际控制人手机号码" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 				<view class="form-item" v-if="!form.controller">
 					<view class="title">实际控制人身份证号码</view>
 					<view class="content">
-						<input type="text" value=""  placeholder="请输入实际控制人身份证号码" placeholder-class="input-placeholder" />
+						<input type="text" v-model="form.c_idcard"  placeholder="请输入实际控制人身份证号码" placeholder-class="input-placeholder" />
 					</view>
 				</view>
 			</view>
@@ -125,6 +125,7 @@
 </template>
 
 <script>
+	import {areaAndMouth} from '../../api/store.js'
 	export default {
 		
 		data() {
@@ -133,6 +134,24 @@
 				index: 0,
 				showUploadList: false,
 				array: ['静态','静态','静态','静态'],
+				areaAndMouths: [],
+				mouths: [],
+				area: {
+					area_name: "",
+					id: '',
+					child: [
+						{
+							area_id: '',
+							id: '',
+							mouth_name: "请先选择区域"
+						}
+					]
+				},
+				mouth: {
+					area_id: '',
+					id: '',
+					mouth_name: ""
+				},
 				form:{
 					area: '',
 					mouth: '',
@@ -162,9 +181,21 @@
 				}
 			}
 		},
+		onLoad() {
+			this.getAreaAndMouth()
+		},
 		methods:{
-			bindPickerChange(){
-				
+			async getAreaAndMouth(){
+				const res = await areaAndMouth()
+				this.areaAndMouths = res.data
+			},
+			areaChange(e){
+				console.log(e)
+				this.area = this.areaAndMouths[e.detail.value]
+				this.mouths = this.areaAndMouths[e.detail.value].child
+			},
+			mouthChange(e){
+				this.mouth = this.mouths[e.detail.value]
 			},
 			chooseSex(index){
 				this.form.sex = index
